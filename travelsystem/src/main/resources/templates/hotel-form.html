@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Otel Formu - Lüks Səyahət Dünyası</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .main-container {
+            background: linear-gradient(rgba(240, 248, 255, 0.9), rgba(224, 242, 254, 0.9)),
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+            padding: 40px;
+        }
+
+        .btn-fancy-primary {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            width: 100%;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            padding: 12px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="content-card">
+
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-primary" th:text="${hotel.id == null ? 'Yeni Otel Əlavə Et' : 'Oteli Redaktə Et'}">Otel Formu</h2>
+                        <p class="text-muted">Zəhmət olmasa aşağıdakı sahələri doldurun</p>
+                    </div>
+
+                    <!-- DÜZƏLDİLDİ: th:action daxilində link sintaksisi ternary operatorunun xaricinə çıxarıldı -->
+                    <form th:action="${hotel.id == null} ? @{/admin/hotels/save} : @{/admin/hotels/update}" th:object="${hotel}" method="post">
+
+                        <!-- Əgər update-dirsə ID-ni gizli şəkildə ötürürük -->
+                        <input type="hidden" th:field="*{id}" />
+
+                        <!-- Otelin Adı -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Otelin Adı</label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="Məs: Excelsior Hotel" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Xəta</div>
+                        </div>
+
+                        <!-- Şəhər Seçimi -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Şəhər</label>
+                            <select th:field="*{city}" class="form-select" required>
+                                <option value="">Şəhər seçin...</option>
+                                <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}">Bakı</option>
+                            </select>
+                        </div>
+
+                        <!-- Ünvan -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Ünvan</label>
+                            <input type="text" th:field="*{address}" class="form-control" placeholder="Məs: Heydər Əliyev prospekti 2" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Xəta</div>
+                        </div>
+
+                        <!-- Ulduz Sayı -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Ulduz Sayı (1-5)</label>
+                            <input type="number" th:field="*{star}" class="form-control" min="1" max="5" placeholder="5" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('star')}" th:errors="*{star}">Xəta</div>
+                        </div>
+
+                        <!-- Şəkil URL -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Şəkil URL (Şəkil linki)</label>
+                            <input type="text" th:field="*{imageUrl}" class="form-control" placeholder="https://example.com/hotel.jpg">
+                        </div>
+
+                        <!-- Təsvir -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Təsvir (Description)</label>
+                            <textarea th:field="*{description}" class="form-control" rows="4" placeholder="Otel haqqında ətraflı məlumat..." required></textarea>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Xəta</div>
+                        </div>
+
+                        <!-- Düymələr -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-fancy-primary">Yadda Saxla</button>
+                            <a href="/admin/hotels" class="btn btn-outline-secondary rounded-pill py-2">Geri qayıt</a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

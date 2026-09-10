@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Otaqlar - Lüks Səyahət Dünyası</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .main-container {
+            background: linear-gradient(rgba(240, 248, 255, 0.9), rgba(224, 242, 254, 0.9)),
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+            padding: 30px;
+        }
+
+        .btn-fancy-primary {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-fancy-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.5);
+            color: white;
+        }
+
+        .filter-box {
+            background: #f8fbff;
+            border: 1px solid #e0f2fe;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .table-custom th {
+            background-color: #f0f8ff;
+            color: #0d6efd;
+            border-bottom: 2px solid #e0f2fe;
+        }
+
+        .table-custom td {
+            vertical-align: middle;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-md-11">
+                <div class="content-card">
+
+                    <!-- Başlıq və Yeni Otaq Düyməsi -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <h2 class="fw-bold text-primary mb-1"><i class="bi bi-door-open me-2"></i>Otaqların İdarə Edilməsi</h2>
+                            <p class="text-muted mb-0">Otellərə aid otaqların siyahısı, qiymət filtrasiyası və idarə olunması</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="/" class="btn btn-outline-secondary rounded-pill px-4">Ana Səhifə</a>
+                            <button sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-fancy-primary" onclick="openCreateModal()">
+                                <i class="bi bi-plus-lg me-1"></i>Yeni Otaq Əlavə Et
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Qiymətə görə Axtarış / Filtrasiya Bölməsi -->
+                    <div class="filter-box">
+                        <form th:action="@{/admin/rooms/price}" method="get" class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                                <input type="number" step="0.01" name="minPrice" class="form-control" placeholder="Min Qiymət (AZN)" required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" step="0.01" name="maxPrice" class="form-control" placeholder="Max Qiymət (AZN)" required>
+                            </div>
+                            <div class="col-md-4 d-flex gap-2">
+                                <button type="submit" class="btn btn-outline-primary rounded-pill w-100"><i class="bi bi-search me-1"></i>Axtar</button>
+                                <a href="/admin/rooms" class="btn btn-outline-secondary rounded-pill" title="Sıfırla"><i class="bi bi-arrow-counterclockwise"></i></a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Otaqların Cədvəl Siyahısı -->
+                    <div class="table-responsive" th:if="${rooms != null && !rooms.isEmpty()}">
+                        <table class="table table-custom align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Otaq Nömrəsi</th>
+                                <th>Növü</th>
+                                <th>Qiymət</th>
+                                <th>Tutum</th>
+                                <th>Status</th>
+                                <th>Otel</th>
+                                <th class="text-end">Əməliyyatlar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="r : ${rooms}">
+                                <td class="fw-semibold" th:text="${r.id}">1</td>
+                                <td>
+                                    <a th:href="@{/admin/rooms/{id}(id=${r.id})}" class="fw-bold text-dark text-decoration-none" th:text="${r.roomNumber}">101</a>
+                                </td>
+                                <td th:text="${r.type}">Standard</td>
+                                <td class="fw-bold text-success" th:text="${r.price} + ' AZN'">100 AZN</td>
+                                <td th:text="${r.capacity} + ' nəfər'">2 nəfər</td>
+                                <td>
+                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill" th:text="${r.status}">Available</span>
+                                </td>
+                                <td>
+                                    <span class="text-primary fw-medium" th:text="${r.hotel != null ? r.hotel.name : 'Təyin edilməyib'}">Hotel</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <!-- Detail Düyməsi -->
+                                        <a th:href="@{/admin/rooms/{id}(id=${r.id})}" class="btn btn-outline-info btn-sm rounded-pill px-3" title="Detallar"><i class="bi bi-eye"></i></a>
+
+                                        <!-- Edit Düyməsi (Modal açır və məlumatları doldurur) -->
+                                        <button sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-outline-warning btn-sm rounded-pill px-3"
+                                                th:onclick="openEditModal([[${r.id}]], [[${r.roomNumber}]], [[${r.type}]], [[${r.price}]], [[${r.capacity}]], [[${r.status}]], [[${r.hotel != null ? r.hotel.id : ''}]])"
+                                                title="Redaktə et"><i class="bi bi-pencil"></i></button>
+
+                                        <!-- Delete Düyməsi -->
+                                        <form sec:authorize="hasRole('ADMIN')" th:action="@{/admin/rooms/delete/{id}(id=${r.id})}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Sil" onclick="return confirm('Bu otağı silmək istədiyinizə əminsiniz?')"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Otaq olmadığı halda göstərilən mesaj -->
+                    <div class="text-center py-5" th:if="${rooms == null || rooms.isEmpty()}">
+                        <div class="text-muted fs-5 mb-3">Sistemdə heç bir otaq tapılmadı.</div>
+                        <button sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-fancy-primary" onclick="openCreateModal()">İlk Otağı Əlavə Et</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Otaq Əlavə Etmə / Redaktə Etmə Modalı -->
+<div sec:authorize="hasRole('ADMIN')" class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary" id="modalTitle">Yeni Otaq Əlavə Et</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form: Controller-dəki /save və /update metodlarına uyğunlaşdırılıb -->
+                <form id="roomForm" th:action="@{/admin/rooms/save}" th:object="${room}" method="post">
+
+                    <input type="hidden" id="roomId" th:field="*{id}" />
+
+                    <!-- Otel Seçimi -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Otel</label>
+                        <select id="roomHotel" th:field="*{hotel}" class="form-select" required>
+                            <option value="">Otel seçin...</option>
+                            <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}">Hotel Name</option>
+                        </select>
+                    </div>
+
+                    <!-- Otaq Nömrəsi -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Otaq Nömrəsi</label>
+                        <input type="text" id="roomNumber" th:field="*{roomNumber}" class="form-control" placeholder="Məs: 101" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('roomNumber')}" th:errors="*{roomNumber}">Xəta</div>
+                    </div>
+
+                    <!-- Növü -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Otaq Növü</label>
+                        <input type="text" id="roomType" th:field="*{type}" class="form-control" placeholder="Məs: Deluxe / Standard" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Xəta</div>
+                    </div>
+
+                    <!-- Qiymət -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Qiymət (AZN)</label>
+                        <input type="number" step="0.01" id="roomPrice" th:field="*{price}" class="form-control" placeholder="150.00" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Xəta</div>
+                    </div>
+
+                    <!-- Tutum -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tutum (Nəfər)</label>
+                        <input type="number" id="roomCapacity" th:field="*{capacity}" class="form-control" min="1" placeholder="2" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">Xəta</div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Status</label>
+                        <input type="text" id="roomStatus" th:field="*{status}" class="form-control" placeholder="Məs: Available / Booked" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Xəta</div>
+                    </div>
+
+                    <!-- Düymələr -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-fancy-primary">Yadda Saxla</button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill py-2" data-bs-dismiss="modal">Ləğv et</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const roomModalEl = document.getElementById('roomModal');
+    const roomModal = roomModalEl ? new bootstrap.Modal(roomModalEl) : null;
+
+    function openCreateModal() {
+        if (!roomModal) return;
+        document.getElementById('roomForm').action = '/admin/rooms/save';
+        document.getElementById('modalTitle').innerText = 'Yeni Otaq Əlavə Et';
+        document.getElementById('roomId').value = '';
+        document.getElementById('roomNumber').value = '';
+        document.getElementById('roomType').value = '';
+        document.getElementById('roomPrice').value = '';
+        document.getElementById('roomCapacity').value = '';
+        document.getElementById('roomStatus').value = '';
+        document.getElementById('roomHotel').value = '';
+        roomModal.show();
+    }
+
+    function openEditModal(id, roomNumber, type, price, capacity, status, hotelId) {
+        if (!roomModal) return;
+        document.getElementById('roomForm').action = '/admin/rooms/update';
+        document.getElementById('modalTitle').innerText = 'Otağı Redaktə Et';
+        document.getElementById('roomId').value = id;
+        document.getElementById('roomNumber').value = roomNumber;
+        document.getElementById('roomType').value = type;
+        document.getElementById('roomPrice').value = price;
+        document.getElementById('roomCapacity').value = capacity;
+        document.getElementById('roomStatus').value = status;
+        document.getElementById('roomHotel').value = hotelId;
+        roomModal.show();
+    }
+
+    // Əgər validasiya xətası baş veribsə və backend flash atribut göndəribsə, modalı avtomatik yenidən açırıq
+    window.addEventListener('DOMContentLoaded', () => {
+        if (!roomModal) return;
+        const shouldOpenModal = [[${openRoomModal != null ? openRoomModal : false}]];
+        const modalMode = [[${modalMode != null ? modalMode : 'create'}]];
+        if (shouldOpenModal) {
+            if (modalMode === 'edit') {
+                document.getElementById('roomForm').action = '/admin/rooms/update';
+                document.getElementById('modalTitle').innerText = 'Otağı Redaktə Et';
+            } else {
+                document.getElementById('roomForm').action = '/admin/rooms/save';
+                document.getElementById('modalTitle').innerText = 'Yeni Otaq Əlavə Et';
+            }
+            roomModal.show();
+        }
+    });
+</script>
+</body>
+</html>

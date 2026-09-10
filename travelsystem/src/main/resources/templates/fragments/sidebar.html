@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm" th:fragment="sidebar" style="width: 280px; min-height: 100vh; border-right: 2px solid #e0f2fe;">
+    <!-- Logo / Başlıq -->
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none px-2">
+        <i class="bi bi-airplane-engines fs-3 me-2 text-primary"></i>
+        <span class="fs-5 fw-bold text-primary">TravelSystem</span>
+    </a>
+    <hr class="text-muted">
+
+    <!-- Menyu Elementləri -->
+    <ul class="nav nav-pills flex-column mb-auto gap-2">
+        <li>
+            <a href="/" class="nav-link text-dark py-2 px-3 rounded-pill fw-medium hover-bg-light">
+                <i class="bi bi-house-door me-2 text-primary"></i> Ana Səhifə
+            </a>
+        </li>
+        <li>
+            <a href="/admin/rooms" class="nav-link text-dark py-2 px-3 rounded-pill fw-medium hover-bg-light">
+                <i class="bi bi-door-open me-2 text-primary"></i> Otaqlar
+            </a>
+        </li>
+        <li>
+            <a href="/admin/users" class="nav-link text-dark py-2 px-3 rounded-pill fw-medium hover-bg-light">
+                <i class="bi bi-people me-2 text-primary"></i> İstifadəçilər
+            </a>
+        </li>
+        <li>
+            <a href="/reservations" class="nav-link text-dark py-2 px-3 rounded-pill fw-medium hover-bg-light">
+                <i class="bi bi-calendar-check me-2 text-primary"></i> Rezervasiyalar
+            </a>
+        </li>
+    </ul>
+
+    <hr class="text-muted">
+
+    <!-- Aşağı Profil / Çıxış Hissəsi -->
+    <div class="dropdown">
+        <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle p-2 rounded-pill hover-bg-light" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="" width="32" height="32" class="rounded-circle me-2 object-fit-cover">
+            <strong class="text-primary">Admin Panel</strong>
+        </a>
+        <ul class="dropdown-menu text-small shadow border-0 rounded-4 mt-2" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item py-2" href="/admin/users/create"><i class="bi bi-person-plus me-2 text-success"></i> Yeni İstifadəçi</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2 text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i> Çıxış</a></li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .hover-bg-light:hover {
+        background-color: #f0f8ff !important;
+        color: #0d6efd !important;
+        transition: all 0.3s ease;
+    }
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #0d6efd, #0dcaf0) !important;
+        color: white !important;
+    }
+</style>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Otaq #' + ${room.roomNumber} + ' - Detallar'">Otaq Detalları - Lüks Səyahət Dünyası</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .main-container {
+            background: linear-gradient(rgba(240, 248, 255, 0.9), rgba(224, 242, 254, 0.9)),
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+            padding: 40px;
+        }
+
+        .info-box {
+            background: #f8fbff;
+            border: 1px solid #e0f2fe;
+            border-radius: 15px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="content-card">
+
+                    <!-- Başlıq və Geri Qayıt Düyməsi -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill mb-2" th:text="${room.hotel != null ? room.hotel.name : 'Otel yoxdur'}">Otel Adı</span>
+                            <h2 class="fw-bold text-primary mb-1" th:text="'Otaq #' + ${room.roomNumber}">Otaq Nömrəsi</h2>
+                            <p class="text-muted mb-0"><i class="bi bi-door-closed text-info me-1"></i>Növ: <span class="fw-semibold text-dark" th:text="${room.type}">Standard</span></p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="/admin/rooms" class="btn btn-outline-secondary rounded-pill px-4">Otaqlara Qayıt</a>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <!-- Qiymət və Tutum -->
+                        <div class="col-md-6">
+                            <div class="info-box h-100">
+                                <h5 class="fw-semibold text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Əsas Məlumatlar</h5>
+                                <p class="mb-2"><strong>Qiymət:</strong> <span class="text-success fw-bold fs-5" th:text="${room.price} + ' AZN'">100 AZN</span></p>
+                                <p class="mb-2"><strong>Tutum:</strong> <span th:text="${room.capacity} + ' nəfər'">2 nəfər</span></p>
+                                <p class="mb-0"><strong>Status:</strong> <span class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill" th:text="${room.status}">Available</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Otel Haqqında Qısa Məlumat -->
+                        <div class="col-md-6">
+                            <div class="info-box h-100" th:if="${room.hotel != null}">
+                                <h5 class="fw-semibold text-primary mb-3"><i class="bi bi-building me-2"></i>Aid Olduğu Otel</h5>
+                                <p class="mb-2"><strong>Otel Adı:</strong> <span th:text="${room.hotel.name}">Hotel Name</span></p>
+                                <p class="mb-2"><strong>Ünvan:</strong> <span th:text="${room.hotel.address}">Address</span></p>
+                                <p class="mb-0"><strong>Ulduz:</strong> <span class="text-warning" th:text="${room.hotel.star} + ' Ulduz'">5 Ulduz</span></p>
+                            </div>
+                            <div class="info-box h-100" th:unless="${room.hotel != null}">
+                                <h5 class="fw-semibold text-primary mb-3"><i class="bi bi-building me-2"></i>Aid Olduğu Otel</h5>
+                                <p class="text-muted mb-0">Bu otaq heç bir otelə təyin edilməyib.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rezervasiya Siyahısı (Əgər bu otağın rezervasiyaları varsa) -->
+                    <div class="info-box" th:if="${room.reservations != null && !room.reservations.isEmpty()}">
+                        <h5 class="fw-semibold text-primary mb-3"><i class="bi bi-calendar-check me-2"></i>Bu Otağın Rezervasiyaları</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center" th:each="res : ${room.reservations}">
+                                <span th:text="'Giriş: ' + ${res.checkInDate} + ' / Çıxış: ' + ${res.checkOutDate}">Rezerv</span>
+                                <span class="badge bg-primary rounded-pill" th:text="${res.totalPrice} + ' AZN'">0 AZN</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

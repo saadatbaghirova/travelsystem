@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yeni İstifadəçi - Lüks Səyahət Dünyası</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f8ff; color: #333; }
+        .main-container {
+            background: linear-gradient(rgba(240, 248, 255, 0.9), rgba(224, 242, 254, 0.9)),
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover; min-height: 100vh; padding: 40px 0;
+        }
+        .content-card { background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15); padding: 40px; }
+        .btn-fancy-primary { background: linear-gradient(135deg, #0d6efd, #0dcaf0); border: none; color: white; border-radius: 30px; padding: 10px 30px; font-weight: 500; width: 100%; }
+        .form-control, .form-select { border-radius: 12px; border: 1px solid #cbd5e1; padding: 12px 15px; }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="content-card">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-primary">Yeni İstifadəçi Əlavə Et</h2>
+                        <p class="text-muted">Zəhmət olmasa istifadəçi məlumatlarını doldurun</p>
+                    </div>
+
+                    <form th:action="@{/admin/users/save}" th:object="${user}" method="post">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Ad</label>
+                                <input type="text" th:field="*{firstName}" class="form-control" placeholder="Məs: Əli" required>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Xəta</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Soyad</label>
+                                <input type="text" th:field="*{lastName}" class="form-control" placeholder="Məs: Vəliyev" required>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Xəta</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" th:field="*{email}" class="form-control" placeholder="example@mail.com" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Xəta</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Şifrə (Password)</label>
+                            <input type="password" th:field="*{password}" class="form-control" placeholder="Ən azı 1 hərf və 1 rəqəm, min 8 simvol" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Xəta</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Telefon Nömrəsi</label>
+                            <input type="text" th:field="*{phoneNumber}" class="form-control" placeholder="+994501234567" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Xəta</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Rol (Role)</label>
+                            <select th:field="*{role}" class="form-select" required>
+                                <option value="">Rol seçin...</option>
+                                <option th:each="r : ${T(com.example.travelsystem.enums.RoleEnum).values()}" th:value="${r}" th:text="${r}">ROLE</option>
+                            </select>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Xəta</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-fancy-primary">Yadda Saxla</button>
+                            <a href="/admin/users" class="btn btn-outline-secondary rounded-pill py-2">Geri qayıt</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+/* Ümumi Stil və Səhifə Ayarları */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f0f;
+    color: #f8f9fa;
+    font-family: 'Playfair Display', serif, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Şüşəvari (Glassmorphism) Efektləri */
+.glass-card {
+    background: rgba(20, 20, 20, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+.glass-nav {
+    background: rgba(15, 15, 15, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Qızılı Vurğular və Düymələr */
+.text-gold {
+    color: #d4af37 !important;
+}
+
+.btn-gold {
+    background-color: #d4af37;
+    color: #0f0f0f;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: #c19b2e;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background-color: #d4af37;
+    color: #0f0f0f;
+}
+
+/* Hero (Banner) Bölməsi */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75)), url('/images/mountain-hotel-bg.jpg') no-repeat center center/cover;
+    height: 75vh;
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Kartlar və Şəkil Keçidləri */
+.room-card {
+    background-color: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+}
+
+/* Sidebar (Admin Panel) */
+.admin-sidebar {
+    width: 280px;
+    height: 100vh;
+    background-color: #121212;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.admin-sidebar .nav-link {
+    color: #adb5bd;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+    background-color: #d4af37;
+    color: #0f0f0f;
+    font-weight: 600;
+}
+
+/* Footer */
+footer {
+    background-color: #0a0a0a;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}

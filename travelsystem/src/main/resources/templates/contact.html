@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Əlaqə - Lüks Səyahət Dünyası</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .main-container {
+            background: linear-gradient(rgba(240, 248, 255, 0.9), rgba(224, 242, 254, 0.9)),
+                        url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 50px 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
+            padding: 40px;
+        }
+
+        .btn-fancy-primary {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+            width: 100%;
+        }
+
+        .info-item {
+            margin-bottom: 20px;
+        }
+
+        .info-item strong {
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-primary mb-2">Bizimlə Əlaqə Saxlayın</h1>
+            <p class="text-muted">Sual və təklifləriniz üçün hər zaman buradayıq</p>
+            <a href="/" class="btn btn-outline-primary rounded-pill px-4 btn-sm">Ana Səhifə</a>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            <!-- Əlaqə Məlumatları -->
+            <div class="col-md-5">
+                <div class="content-card h-100">
+                    <h3 class="fw-bold text-primary mb-4">Əlaqə Məlumatları</h3>
+
+                    <div class="info-item" th:if="${contactInfo != null and contactInfo.address != null}">
+                        <strong>Ünvan:</strong>
+                        <p class="text-muted mb-0" th:text="${contactInfo.address}">Bakı, Azərbaycan</p>
+                    </div>
+
+                    <div class="info-item" th:if="${contactInfo != null and contactInfo.phone != null}">
+                        <strong>Telefon:</strong>
+                        <p class="text-muted mb-0" th:text="${contactInfo.phone}">+994 12 345 67 89</p>
+                    </div>
+
+                    <div class="info-item" th:if="${contactInfo != null and contactInfo.email != null}">
+                        <strong>Email:</strong>
+                        <p class="text-muted mb-0" th:text="${contactInfo.email}">info@travelsystem.com</p>
+                    </div>
+
+                    <div class="info-item" th:if="${contactInfo != null and contactInfo.workingHours != null}">
+                        <strong>İş Saatları:</strong>
+                        <p class="text-muted mb-0" th:text="${contactInfo.workingHours}">Bazar ertəsi - Şənbə: 09:00 - 18:00</p>
+                    </div>
+
+                    <!-- Sosial şəbəkələr -->
+                    <div class="mt-4 pt-3 border-top" th:if="${contactInfo != null}">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a th:if="${contactInfo.facebook != null and !contactInfo.facebook.isEmpty()}" th:href="${contactInfo.facebook}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">Facebook</a>
+                            <a th:if="${contactInfo.instagram != null and !contactInfo.instagram.isEmpty()}" th:href="${contactInfo.instagram}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">Instagram</a>
+                            <a th:if="${contactInfo.linkedin != null and !contactInfo.linkedin.isEmpty()}" th:href="${contactInfo.linkedin}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">LinkedIn</a>
+                            <a th:if="${contactInfo.twitter != null and !contactInfo.twitter.isEmpty()}" th:href="${contactInfo.twitter}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">Twitter</a>
+                            <a th:if="${contactInfo.youtube != null and !contactInfo.youtube.isEmpty()}" th:href="${contactInfo.youtube}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">YouTube</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Mesaj Göndərmə Formu -->
+            <div class="col-md-7">
+                <div class="content-card">
+                    <h3 class="fw-bold text-primary mb-4">Bizə Yazın</h3>
+
+                    <form th:action="@{/contact/send}" th:object="${contactMessage}" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Adınız</label>
+                            <input type="text" th:field="*{name}" class="form-control rounded-pill px-3" placeholder="Ad Soyad" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email Adresiniz</label>
+                            <input type="email" th:field="*{email}" class="form-control rounded-pill px-3" placeholder="email@example.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mövzu</label>
+                            <input type="text" th:field="*{subject}" class="form-control rounded-pill px-3" placeholder="Mövzu başlığı" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Mesajınız</label>
+                            <textarea th:field="*{message}" class="form-control rounded-4 p-3" rows="4" placeholder="Mesajınızı bura yazın..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-fancy-primary">Mesajı Göndər</button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
